@@ -1478,6 +1478,9 @@ void main() async {
 ```
 
 **ขั้นตอนที่ 3** กด Run สังเกตความแตกต่างของเวลา
+***ผลลัพธ์***
+<img width="1536" height="616" alt="image" src="https://github.com/user-attachments/assets/a5dbc45f-a422-4231-a8ff-521527984a25" />
+
 
 **ขั้นตอนที่ 4** เพิ่ม Error Handling ต่อท้าย `main()`:
 
@@ -1497,12 +1500,13 @@ void main() async {
 ```
 
 **ขั้นตอนที่ 5** กด Run อีกครั้ง บันทึกผลเวลาของ Sequential vs Parallel
+<img width="1536" height="613" alt="image" src="https://github.com/user-attachments/assets/5f51333f-0010-4906-ba74-e709aad1aeb9" />
 
 ```
 บันทึกผลการทดลอง:
-Sequential ใช้เวลา: _______ ms
-Parallel ใช้เวลา:   _______ ms
-ประหยัดเวลาได้:     _______ ms (_______ %)
+Sequential ใช้เวลา: 3104 ms
+Parallel ใช้เวลา:   993 ms
+ประหยัดเวลาได้:   2111 ms (68.01 %)
 ```
 
 ---
