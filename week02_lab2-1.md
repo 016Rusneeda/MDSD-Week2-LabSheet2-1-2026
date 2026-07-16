@@ -649,10 +649,77 @@ void main() {
 
 **บันทึกผลการทดลอง: บันทึกโค้ดคำสั่งที่ได้**
 ```dart
-// บันทึกโค้ดในส่วนนี้
+void main() {
+  List<Map<String, dynamic>> students = [
+    {"name": "สมชาย", "gpa": 3.75, "year": 3, "faculty": "วิศวกรรม"},
+    {"name": "สมหญิง", "gpa": 2.50, "year": 1, "faculty": "วิทยาศาสตร์"},
+    {"name": "สมศักดิ์", "gpa": 3.10, "year": 2, "faculty": "วิศวกรรม"},
+    {"name": "สมใจ", "gpa": 1.80, "year": 4, "faculty": "บริหาร"},
+    {"name": "สมปอง", "gpa": 3.50, "year": 2, "faculty": "วิทยาศาสตร์"},
+    {"name": "สมศรี", "gpa": 2.90, "year": 3, "faculty": "บริหาร"},
+  ];
 
+  // --- ส่วนการทดลอง 2.2 ---
+  print("=== นักศึกษาที่ GPA >= 3.0 ===");
+  var honorStudents = students.where((s) => (s["gpa"] as double) >= 3.0).toList();
+  for (var s in honorStudents) {
+    print("  ${s["name"]}: ${s["gpa"]}");
+  }
+
+  print("\n=== รายงานนักศึกษา ===");
+  students.map((s) => "${s["name"]} (${s["faculty"]}) GPA: ${s["gpa"]}").forEach(print);
+
+  print("\n=== วิเคราะห์คะแนน ===");
+  List<double> gpas = students.map((s) => s["gpa"] as double).toList();
+  print("GPA สูงสุด: ${gpas.reduce((a, b) => a > b ? a : b)}");
+  print("GPA ต่ำสุด: ${gpas.reduce((a, b) => a < b ? a : b)}");
+  print("GPA เฉลี่ย: ${(gpas.reduce((a, b) => a + b) / gpas.length).toStringAsFixed(2)}");
+
+  // --- โจทย์ฝึกทำ 2 ---
+  
+  // 1. ทดสอบค้นหา Top Student
+  print("\n=== Top Student ของคณะวิศวกรรม ===");
+  print(findTopStudentByFaculty(students, "วิศวกรรม"));
+
+  // 2. ทดสอบการจัดกลุ่มคณะ
+  print("\n=== การจัดกลุ่มนักศึกษาตามคณะ ===");
+  var grouped = groupByFaculty(students);
+  print(grouped.keys.toList());
+
+  // 3. เรียงลำดับ GPA สูงสุด 3 อันดับ
+  students.sort((a, b) => (b["gpa"] as double).compareTo(a["gpa"] as double));
+  print("\n=== นักศึกษา GPA สูงสุด 3 อันดับแรก ===");
+  for (int i = 0; i < 3; i++) {
+    print("${i + 1}. ${students[i]["name"]} - GPA: ${students[i]["gpa"]}");
+  }
+}
+
+// --- ฟังก์ชันเสริม (อยู่นอก main) ---
+
+// 1. ฟังก์ชันหาคนเก่งสุดในคณะ
+String findTopStudentByFaculty(List<Map<String, dynamic>> students, String faculty) {
+  var facultyStudents = students.where((s) => s["faculty"] == faculty).toList();
+  if (facultyStudents.isEmpty) return "ไม่พบนักศึกษาในคณะนี้";
+  var topStudent = facultyStudents.reduce((a, b) => (a["gpa"] > b["gpa"]) ? a : b);
+  return topStudent["name"];
+}
+
+// 2. ฟังก์ชันจัดกลุ่มคณะ
+Map<String, List<Map<String, dynamic>>> groupByFaculty(List<Map<String, dynamic>> students) {
+  Map<String, List<Map<String, dynamic>>> grouped = {};
+  for (var s in students) {
+    String faculty = s["faculty"];
+    if (!grouped.containsKey(faculty)) {
+      grouped[faculty] = [];
+    }
+    grouped[faculty]!.add(s);
+  }
+  return grouped;
+}
 
 ```
+<img width="1536" height="685" alt="image" src="https://github.com/user-attachments/assets/6c363711-b01b-4c36-a790-21a393d40782" />
+
 ---
 
 ## ส่วนที่ 3 — ทฤษฎีและการทดลอง: OOP
