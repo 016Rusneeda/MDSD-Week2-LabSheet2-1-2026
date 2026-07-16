@@ -280,10 +280,76 @@ void main() {
 ```
 **บันทึกผลการทดลอง: บันทึกโค้ดคำสั่งที่ได้**
 ```dart
-// บันทึกโค้ดในส่วนนี้
+void main() {
+  // === บล็อกที่ 1: ชนิดข้อมูลพื้นฐาน ===
+  String studentName = "สมชาย ดีใจ";
+  int studentAge = 20;
+  double gpa = 3.75;
+  bool isEnrolled = true;
+
+  print("=== ข้อมูลนักศึกษา ===");
+  print("ชื่อ: $studentName");
+  print("อายุ: $studentAge ปี");
+  print("GPA: $gpa");
+  print("ลงทะเบียนแล้ว: $isEnrolled");
+  print("ปีเกิด (ประมาณ): ${2026 - studentAge}");
+  
+    // === บล็อกที่ 2: Null Safety ===
+  print("\n=== Null Safety ===");
+  String? nickname = null;
+  print("ชื่อเล่น: ${nickname ?? 'ไม่มี'}");  // → ไม่มี
+
+  nickname = "ชาย";
+  print("ชื่อเล่น: ${nickname ?? 'ไม่มี'}");  // → ชาย
+  print("ความยาว: ${nickname?.length}");       // → 3
+  print("ตัวพิมพ์ใหญ่: ${nickname?.toUpperCase()}"); // → ชาย
+  
+    // === บล็อกที่ 3: List ===
+  print("\n=== รายวิชาที่ลงทะเบียน ===");
+  List<String> courses = ["Mobile Dev", "Web Dev", "AI"];
+  Map<String, int> courseScores = {
+    "Mobile Dev": 90,
+    "Web Dev": 85,
+    "AI": 92,
+  };
+
+  // วนซ้ำแสดงรายวิชาและคะแนน
+  for (int i = 0; i < courses.length; i++) {
+    String course = courses[i];
+    int? score = courseScores[course];
+    print("${i + 1}. $course: ${score ?? 'ยังไม่มีคะแนน'} คะแนน");
+  }
+
+  // คำนวณเฉลี่ย
+  int total = courseScores.values.reduce((a, b) => a + b);
+  double avg = total / courseScores.length;
+  print("คะแนนเฉลี่ย: ${avg.toStringAsFixed(2)}");
+  
+  // 1. เพิ่มวิชา Database
+  courses.add("Database");
+  courseScores["Database"] = 88;
+
+  // 2. หาวิชาที่คะแนนสูงสุด
+  var highestEntry = courseScores.entries.reduce((a, b) => a.value > b.value ? a : b);
+  print("\nวิชาที่ได้คะแนนสูงสุด: ${highestEntry.key} (${highestEntry.value} คะแนน)");
+
+  // 3. นับจำนวนวิชาที่ได้ >= 90
+  int count = courseScores.values.where((score) => score >= 90).length;
+  print("จำนวนวิชาที่ได้ >= 90: $count วิชา");
+
+  // 4. สร้าง Set ของวิชาที่ผ่าน
+  Set<String> passedCourses = courseScores.entries
+      .where((entry) => entry.value >= 80)
+      .map((entry) => entry.key)
+      .toSet();
+  print("วิชาที่ผ่าน: $passedCourses");
+}
 
 
 ```
+
+<img width="1536" height="692" alt="image" src="https://github.com/user-attachments/assets/4b41ee43-9b08-49b9-8a9d-48221072b516" />
+
 ---
 
 ## ส่วนที่ 2 — ทฤษฎีและการทดลอง: Functions
