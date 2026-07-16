@@ -1557,6 +1557,7 @@ void main() async {
 ```
 
 **ขั้นตอนที่ 2** กด Run สังเกตว่าราคาออกมาทีละค่า ไม่ใช่ทั้งหมดพร้อมกัน
+<img width="1536" height="553" alt="image" src="https://github.com/user-attachments/assets/c502e64a-a4e3-48a2-82dd-9f0225bb23bd" />
 
 ---
 
@@ -1570,10 +1571,100 @@ void main() async {
 
 **บันทึกผลการทดลอง: บันทึกโค้ดคำสั่งที่ได้**
 ```dart
-// บันทึกโค้ดในส่วนนี้
+import 'dart:async';
 
+// --- ส่วนที่ 1-3: OOP (คลาสที่ปรับปรุงแล้ว) ---
+class BankAccount {
+  final String ownerName;
+  double _balance;
+  List<String> _history = [];
+  
+  BankAccount({required this.ownerName, double initial = 0}) : _balance = initial;
+  double get balance => _balance;
+  
+  bool deposit(double amount) {
+    _balance += amount;
+    _history.add("+ ฝาก ${amount.toStringAsFixed(2)}");
+    return true;
+  }
+
+  bool withdraw(double amount) {
+    if (amount > _balance) return false;
+    _balance -= amount;
+    _history.add("- ถอน ${amount.toStringAsFixed(2)}");
+    return true;
+  }
+
+  void printStatement() {
+    print("\n=== สรุปบัญชี: $ownerName ===");
+    print("ยอดปัจจุบัน: ${_balance.toStringAsFixed(2)} บาท");
+  }
+}
+
+class CheckingAccount extends BankAccount {
+  CheckingAccount({required super.ownerName, super.initial});
+  @override
+  bool withdraw(double amount) {
+    if (_balance - amount < -500) return false; // Overdraft limit
+    _balance -= amount;
+    if (_balance < 0) _balance -= 50; // หักค่าธรรมเนียม
+    return true;
+  }
+}
+
+// --- ส่วนที่ 4: Async/Await & Stream
+Future<double> calculateTax(double income) async {
+  await Future.delayed(Duration(milliseconds: 500));
+  if (income <= 150000) return 0.0;
+  if (income <= 300000) return (income - 150000) * 0.05;
+  if (income <= 500000) return (150000 * 0.05) + ((income - 300000) * 0.10);
+  return (150000 * 0.05) + (200000 * 0.10) + ((income - 500000) * 0.20);
+}
+
+Future<double> fetchUserIncome(int userId) async {
+  await Future.delayed(Duration(milliseconds: 500));
+  const incomes = {1: 120000.0, 2: 280000.0, 3: 620000.0};
+  return incomes[userId] ?? 0;
+}
+
+Stream<String> simulateChat() async* {
+  for (int i = 1; i <= 5; i++) {
+    await Future.delayed(Duration(seconds: 1));
+    yield "ข้อความที่ $i: สวัสดีครับ 👋";
+  }
+}
+
+// --- MAIN ฟังก์ชันหลัก ---
+void main() async {
+  print("=== เริ่มรันโปรแกรมทดสอบทุกส่วน ===\n");
+
+  // 1. ทดสอบ OOP
+  var myAccount = CheckingAccount(ownerName: "สมศักดิ์", initial: 200);
+  myAccount.withdraw(600);
+  myAccount.printStatement();
+
+  // 2. ดึงรายได้ 3 คนพร้อมกันและคำนวณภาษี
+  print("\n=== คำนวณภาษี 3 คนพร้อมกัน (Future.wait) ===");
+  var incomes = await Future.wait([fetchUserIncome(1), fetchUserIncome(2), fetchUserIncome(3)]);
+  var taxes = await Future.wait(incomes.map((inc) => calculateTax(inc)));
+
+  for (int i = 0; i < incomes.length; i++) {
+    print("User ${i + 1}: รายได้ ${incomes[i].toStringAsFixed(2)} บาท → ภาษี ${taxes[i].toStringAsFixed(2)} บาท");
+  }
+  print("ภาษีรวมทั้งหมด: ${taxes.reduce((a, b) => a + b).toStringAsFixed(2)} บาท");
+
+  // 3. ทดสอบ Stream
+  print("\n=== ระบบ Chat (Stream) ===");
+  await for (String message in simulateChat()) {
+    print(message);
+  }
+  
+  print("\n=== จบการทำงานทุกส่วน ===");
+}
 
 ```
+<img width="1536" height="588" alt="image" src="https://github.com/user-attachments/assets/d50839e2-771b-4ead-a92c-ea151a41ff15" />
+
 ---
 
 
